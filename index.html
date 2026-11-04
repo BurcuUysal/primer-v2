@@ -45,6 +45,24 @@
   .ipucu { border-left:3px solid var(--krem); padding:10px 14px; margin:14px 0; color:var(--muted); background:rgba(255,255,255,.04); border-radius:0 10px 10px 0; }
   label { display:block; margin:10px 0 6px; font-size:.95rem; color:var(--muted); font-weight:600; }
   input[type=number], select, textarea { width:100%; padding:13px; border:0; border-radius:12px; background:var(--yuz); color:var(--fg); min-height:50px; }
+  .seviye-secici { position:relative; }
+  .seviye-trigger { display:flex; align-items:center; justify-content:space-between; gap:16px; width:100%; min-height:58px; margin:0; padding:12px 16px; border:1px solid var(--cizgi); border-radius:14px; background:linear-gradient(135deg, rgba(152,211,189,.08), transparent 60%), #082b21; color:#e6f5ee; text-align:left; font-weight:600; transition:border-color .2s, box-shadow .2s, background-color .2s; }
+  .seviye-trigger:hover, .seviye-secici.acik .seviye-trigger { border-color:rgba(152,211,189,.55); background-color:#0b3327; }
+  .seviye-trigger:focus-visible { outline:2px solid var(--pri); outline-offset:3px; }
+  .seviye-trigger .seviye-trigger-etiket { display:flex; align-items:center; gap:12px; }
+  .seviye-trigger .seviye-numara { display:inline-grid; place-items:center; width:30px; height:30px; border:1px solid var(--cizgi); border-radius:9px; background:rgba(152,211,189,.08); color:var(--pri); font:500 11px/1 "JetBrains Mono", ui-monospace, monospace; }
+  .seviye-ok { width:9px; height:9px; border-right:2px solid var(--pri); border-bottom:2px solid var(--pri); transform:translateY(-2px) rotate(45deg); transition:transform .2s; }
+  .seviye-secici.acik .seviye-ok { transform:translateY(2px) rotate(225deg); }
+  .seviye-menu { position:absolute; z-index:5; top:calc(100% + 8px); left:0; right:0; display:grid; gap:5px; padding:7px; border:1px solid rgba(152,211,189,.24); border-radius:16px; background:rgba(2,31,24,.98); box-shadow:0 18px 40px rgba(0,0,0,.42), 0 0 0 1px rgba(152,211,189,.04); backdrop-filter:blur(16px); opacity:0; visibility:hidden; transform:translateY(-6px) scale(.98); transform-origin:top; transition:opacity .16s ease, transform .16s ease, visibility .16s; }
+  .seviye-secici.acik .seviye-menu { opacity:1; visibility:visible; transform:translateY(0) scale(1); }
+  .seviye-menu[hidden] { display:none; }
+  .seviye-secim { display:flex; align-items:center; gap:12px; width:100%; min-height:56px; margin:0; padding:9px 10px; border:1px solid transparent; border-radius:11px; background:transparent; color:var(--fg); text-align:left; transition:background .16s, border-color .16s; }
+  .seviye-secim:hover, .seviye-secim:focus-visible { outline:none; border-color:rgba(152,211,189,.16); background:rgba(152,211,189,.08); }
+  .seviye-secim.secili { background:rgba(152,211,189,.1); }
+  .seviye-secim .seviye-numara { display:inline-grid; flex:0 0 34px; place-items:center; width:34px; height:34px; border:1px solid var(--cizgi); border-radius:10px; color:var(--muted); font:500 11px/1 "JetBrains Mono", ui-monospace, monospace; }
+  .seviye-secim.secili .seviye-numara { border-color:rgba(152,211,189,.36); color:var(--pri); }
+  .seviye-secim strong { display:block; font-size:.9rem; line-height:1.35; color:#e6f5ee; }
+  .seviye-secim small { display:block; margin-top:2px; color:var(--muted); font-size:.77rem; }
   textarea { height:160px; font:12px/1.5 "JetBrains Mono", ui-monospace, monospace; }
   .not { font-size:.9rem; color:var(--muted); text-align:center; margin:10px 0 0; }
   .sahne-kart { position:relative; overflow:hidden; }
@@ -99,7 +117,7 @@
   .terminal .dosya { font:500 12px/16px "JetBrains Mono", ui-monospace, monospace; color:var(--muted); }
   .terminal textarea { background:transparent; border-radius:0; color:var(--krem); }
   .gorsel { position:relative; border-radius:16px; overflow:hidden; margin:0 0 14px; box-shadow:0 10px 30px rgba(0,0,0,.3); border:1px solid var(--cizgi); background:#001711; }
-  .gorsel svg { display:block; width:100%; height:auto; }
+  .gorsel img { display:block; width:100%; height:auto; }
   .gorsel::after { content:""; position:absolute; inset:auto 0 0 0; height:56%; background:linear-gradient(to top, rgba(0,23,17,.92), rgba(0,23,17,0)); pointer-events:none; }
   .gorsel .kenar { position:absolute; left:16px; right:16px; bottom:12px; z-index:1; display:flex; justify-content:space-between; align-items:center; gap:10px; font:500 11px/16px "JetBrains Mono", ui-monospace, monospace; letter-spacing:.07em; text-transform:uppercase; color:var(--pri); }
   .gorsel .kenar span:last-child { color:var(--muted); }
@@ -211,66 +229,10 @@ function davranisSec(p) {
 }
 
 // ------------------------------------------------------------------ ekranlar
-const GORSEL_MASA = `<svg viewBox="0 0 560 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gece çalışan bir yazılımcının masası">
-<defs>
-<linearGradient id="gz1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0e2f27"/><stop offset="1" stop-color="#001711"/></linearGradient>
-<radialGradient id="gp1" cx="0.72" cy="0.4" r="0.55"><stop offset="0" stop-color="#2f8f72" stop-opacity=".55"/><stop offset="1" stop-color="#2f8f72" stop-opacity="0"/></radialGradient>
-<linearGradient id="gl1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9e3c9" stop-opacity=".24"/><stop offset="1" stop-color="#e9e3c9" stop-opacity="0"/></linearGradient>
-</defs>
-<rect width="560" height="210" fill="url(#gz1)"/>
-<rect width="560" height="210" fill="url(#gp1)"/>
-<circle cx="40" cy="30" r="1.6" fill="#e9e3c9" opacity=".6"/><circle cx="210" cy="18" r="1.4" fill="#98d3bd" opacity=".7"/><circle cx="520" cy="190" r="1.4" fill="#98d3bd" opacity=".5"/><circle cx="100" cy="190" r="1.2" fill="#e9e3c9" opacity=".4"/>
-<polygon points="74,34 14,152 150,152" fill="url(#gl1)"/>
-<path d="M58 28 q12 -16 30 -6 l-10 24 z" fill="#e9e3c9" opacity=".92"/>
-<line x1="76" y1="40" x2="54" y2="122" stroke="#ccc7ae" stroke-width="3" stroke-linecap="round"/>
-<line x1="54" y1="122" x2="42" y2="152" stroke="#ccc7ae" stroke-width="3" stroke-linecap="round"/>
-<rect x="0" y="152" width="560" height="58" fill="#00110c"/>
-<rect x="0" y="152" width="560" height="2" fill="#1f5a49"/>
-<rect x="128" y="64" width="150" height="86" rx="8" fill="#02251c" stroke="#3f7564" stroke-width="1.5"/>
-<circle cx="142" cy="76" r="3" fill="#ffb4ab"/><circle cx="152" cy="76" r="3" fill="#ccc7ae"/><circle cx="162" cy="76" r="3" fill="#84d8a6"/>
-<rect x="140" y="90" width="80" height="5" rx="2.5" fill="#98d3bd" opacity=".8"/>
-<rect x="140" y="102" width="112" height="5" rx="2.5" fill="#e9e3c9" opacity=".55"/>
-<rect x="150" y="114" width="70" height="5" rx="2.5" fill="#84d8a6" opacity=".7"/>
-<rect x="150" y="126" width="96" height="5" rx="2.5" fill="#98d3bd" opacity=".5"/>
-<rect x="300" y="30" width="232" height="126" rx="10" fill="#00110c" stroke="#3f7564" stroke-width="2"/>
-<rect x="310" y="40" width="212" height="106" rx="6" fill="#02251c"/>
-<rect x="322" y="54" width="60" height="6" rx="3" fill="#84d8a6"/>
-<rect x="322" y="68" width="150" height="6" rx="3" fill="#98d3bd" opacity=".75"/>
-<rect x="336" y="82" width="110" height="6" rx="3" fill="#e9e3c9" opacity=".6"/>
-<rect x="336" y="96" width="130" height="6" rx="3" fill="#98d3bd" opacity=".5"/>
-<rect x="322" y="110" width="90" height="6" rx="3" fill="#84d8a6" opacity=".7"/>
-<rect class="imlec" x="418" y="108" width="9" height="10" fill="#e9e3c9"/>
-<rect x="406" y="156" width="40" height="14" fill="#1a3a31"/>
-<rect x="380" y="168" width="92" height="6" rx="3" fill="#1a3a31"/>
-<text x="246" y="44" font-family="JetBrains Mono, monospace" font-size="18" fill="#98d3bd" opacity=".55">{ }</text>
-<text x="470" y="22" font-family="JetBrains Mono, monospace" font-size="15" fill="#84d8a6" opacity=".6">&lt;/&gt;</text>
-<text x="20" y="196" font-family="JetBrains Mono, monospace" font-size="14" fill="#98d3bd" opacity=".35">&gt;_</text>
-</svg>`;
-const GORSEL_ANALIZ = `<svg viewBox="0 0 560 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Karar analizi çizimi">
-<defs>
-<linearGradient id="gz2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0e2f27"/><stop offset="1" stop-color="#001711"/></linearGradient>
-<radialGradient id="gp2" cx="0.8" cy="0.3" r="0.6"><stop offset="0" stop-color="#2f8f72" stop-opacity=".5"/><stop offset="1" stop-color="#2f8f72" stop-opacity="0"/></radialGradient>
-<linearGradient id="ga2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#84d8a6" stop-opacity=".35"/><stop offset="1" stop-color="#84d8a6" stop-opacity="0"/></linearGradient>
-</defs>
-<rect width="560" height="150" fill="url(#gz2)"/>
-<rect width="560" height="150" fill="url(#gp2)"/>
-<line x1="250" y1="40" x2="540" y2="40" stroke="#1f5a49" stroke-width="1" opacity=".6"/>
-<line x1="250" y1="68" x2="540" y2="68" stroke="#1f5a49" stroke-width="1" opacity=".6"/>
-<line x1="250" y1="96" x2="540" y2="96" stroke="#1f5a49" stroke-width="1" opacity=".6"/>
-<line x1="250" y1="124" x2="540" y2="124" stroke="#1f5a49" stroke-width="1" opacity=".6"/>
-<polygon points="270,118 320,100 370,104 420,72 470,60 520,34 520,124 270,124" fill="url(#ga2)"/>
-<polyline points="270,118 320,100 370,104 420,72 470,60 520,34" fill="none" stroke="#84d8a6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="320" cy="100" r="4" fill="#e9e3c9"/><circle cx="420" cy="72" r="4" fill="#e9e3c9"/><circle cx="520" cy="34" r="5" fill="#e9e3c9"/>
-<rect x="28" y="24" width="190" height="98" rx="8" fill="#02251c" stroke="#3f7564" stroke-width="1.5"/>
-<circle cx="42" cy="36" r="3" fill="#ffb4ab"/><circle cx="52" cy="36" r="3" fill="#ccc7ae"/><circle cx="62" cy="36" r="3" fill="#84d8a6"/>
-<rect x="40" y="52" width="70" height="5" rx="2.5" fill="#84d8a6" opacity=".85"/>
-<rect x="40" y="64" width="140" height="5" rx="2.5" fill="#98d3bd" opacity=".6"/>
-<rect x="52" y="76" width="100" height="5" rx="2.5" fill="#e9e3c9" opacity=".55"/>
-<rect x="52" y="88" width="120" height="5" rx="2.5" fill="#98d3bd" opacity=".45"/>
-<rect class="imlec" x="40" y="100" width="9" height="10" fill="#e9e3c9"/>
-</svg>`;
-function gorsel(svg, sol, sag, nokta) {
-  return `<div class="gorsel" aria-hidden="false">${svg}<div class="kenar"><span><i class="nokta ${nokta || ""}"></i> ${sol}</span><span>${sag}</span></div></div>`;
+const GORSEL_MASA = "model/primer1.jpg";
+const GORSEL_ANALIZ = "model/primer2.jpg";
+function gorsel(src, alt, sol, sag, nokta) {
+  return `<div class="gorsel"><img src="${src}" alt="${alt}"><div class="kenar"><span><i class="nokta ${nokta || ""}"></i> ${sol}</span><span>${sag}</span></div></div>`;
 }
 
 function baslangic() {
@@ -283,20 +245,74 @@ function baslangic() {
   const ozet = veri ? [["Ölçülen", "süre · tıklama"], ["Sahne", "8 karar"], ["Kayıt", "CSV, sende"]]
                     : [["Anlatım", "kısa · derin"], ["İpucu", "gerekince"], ["Süre", "esnek"]];
   kok.innerHTML = `
-    ${gorsel(GORSEL_MASA, durum, "Karar hikâyesi", nokta)}
+    ${gorsel(GORSEL_MASA, "Gece çalışan bir yazılımcının masası", durum, "Karar hikâyesi", nokta)}
     <div class="kart">
       <p style="margin:0">${aciklama}</p>
       <div class="ozet">${ozet.map((o) => `<div><b>${o[0]}</b><span>${o[1]}</span></div>`).join("")}</div>
     </div>
     <div class="kart kart2">
       <label for="seviye" style="margin-top:0">Kendini hangi seviyede görüyorsun?</label>
-      <select id="seviye" data-cy="seviye">
-        <option value="1">1 — Yeni başlıyorum</option><option value="2">2 — Orta</option><option value="3">3 — İleri</option>
-      </select>
+      <div class="seviye-secici" id="seviyeSecici">
+        <button class="seviye-trigger" type="button" id="seviye" data-cy="seviye" data-value="1" aria-haspopup="listbox" aria-expanded="false" aria-controls="seviyeMenu">
+          <span class="seviye-trigger-etiket"><span class="seviye-numara">01</span><span>Yeni başlıyorum</span></span><i class="seviye-ok" aria-hidden="true"></i>
+        </button>
+        <div class="seviye-menu" id="seviyeMenu" role="listbox" aria-label="Seviye seç" hidden>
+          <button class="seviye-secim secili" type="button" role="option" aria-selected="true" data-value="1"><span class="seviye-numara">01</span><span><strong>Yeni başlıyorum</strong><small>Temelleri öğreniyorum</small></span></button>
+          <button class="seviye-secim" type="button" role="option" aria-selected="false" data-value="2"><span class="seviye-numara">02</span><span><strong>Orta</strong><small>Deneyimim var, gelişiyorum</small></span></button>
+          <button class="seviye-secim" type="button" role="option" aria-selected="false" data-value="3"><span class="seviye-numara">03</span><span><strong>İleri</strong><small>Karmaşık konularda rahatım</small></span></button>
+        </div>
+      </div>
       <p class="not" style="text-align:left">Bu seçim yalnızca modele bir girdi olarak gider; hikâyenin kendisini değiştirmez.</p>
     </div>
     <button class="buyuk" data-cy="basla" id="basla">Başla →</button>`;
-  $("#basla").onclick = () => { D.seviye = Number($("#seviye").value); D.i = 0; sahneyiGoster(); };
+  const seviyeSecici = $("#seviyeSecici");
+  const seviyeTetikleyici = $("#seviye");
+  const seviyeMenusu = $("#seviyeMenu");
+  const seviyeSecenekleri = [...seviyeMenusu.querySelectorAll('[role="option"]')];
+  const menuAc = (odaklaIlk = false) => {
+    seviyeMenusu.hidden = false;
+    seviyeSecici.classList.add("acik");
+    seviyeTetikleyici.setAttribute("aria-expanded", "true");
+    if (odaklaIlk) seviyeSecenekleri[0].focus();
+  };
+  const menuKapat = (tetikleyiciyeOdaklan = false) => {
+    seviyeSecici.classList.remove("acik");
+    seviyeTetikleyici.setAttribute("aria-expanded", "false");
+    seviyeMenusu.hidden = true;
+    if (tetikleyiciyeOdaklan) seviyeTetikleyici.focus();
+  };
+  const seviyeSec = (secenek) => {
+    seviyeTetikleyici.dataset.value = secenek.dataset.value;
+    seviyeTetikleyici.querySelector(".seviye-trigger-etiket").innerHTML =
+      `<span class="seviye-numara">${secenek.dataset.value.padStart(2, "0")}</span><span>${secenek.querySelector("strong").textContent}</span>`;
+    seviyeSecenekleri.forEach((aday) => {
+      const secili = aday === secenek;
+      aday.classList.toggle("secili", secili);
+      aday.setAttribute("aria-selected", String(secili));
+    });
+    menuKapat(true);
+  };
+  seviyeTetikleyici.onclick = () => seviyeTetikleyici.getAttribute("aria-expanded") === "true" ? menuKapat() : menuAc();
+  seviyeTetikleyici.onkeydown = (e) => {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); menuAc(true); }
+  };
+  seviyeSecenekleri.forEach((secenek, i) => {
+    secenek.onclick = () => seviyeSec(secenek);
+    secenek.onkeydown = (e) => {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        seviyeSecenekleri[(i + (e.key === "ArrowDown" ? 1 : -1) + seviyeSecenekleri.length) % seviyeSecenekleri.length].focus();
+      } else if (e.key === "Home" || e.key === "End") {
+        e.preventDefault();
+        seviyeSecenekleri[e.key === "Home" ? 0 : seviyeSecenekleri.length - 1].focus();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        menuKapat(true);
+      }
+    };
+  });
+  document.addEventListener("click", (e) => { if (!seviyeSecici.contains(e.target)) menuKapat(); });
+  $("#basla").onclick = () => { D.seviye = Number(seviyeTetikleyici.dataset.value); D.i = 0; sahneyiGoster(); };
 }
 
 function anlatimMetni(s) {
@@ -388,7 +404,7 @@ async function onayla() {
       ${D.p !== null ? `<small>Sonraki sahnenin modu: <b>${D.davranis}</b></small>` : ""}
     </div>` : "";
   kok.innerHTML = `
-    ${gorsel(GORSEL_ANALIZ, "Karar kaydedildi", "Sahne " + (D.i + 1) + "/" + SAHNELER.length + " · Değerlendirme")}
+    ${gorsel(GORSEL_ANALIZ, "Teknik bir krizi analiz eden mühendis", "Karar kaydedildi", "Sahne " + (D.i + 1) + "/" + SAHNELER.length + " · Değerlendirme")}
     <div class="kart">
       <p class="sonuc-pill ${dogru ? "" : "kotu"}" data-cy="geri-bildirim">${dogru ? "Doğru karar." : "Pek iyi bir seçim değil."}</p>
       <span class="mini-etiket">Senin hamlen</span>
