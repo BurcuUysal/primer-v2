@@ -3,27 +3,101 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Newsreader:wght@400;500;600&display=swap" rel="stylesheet">
 <title>The Primer v2 — Uyumlanan Mühendis Hikâyesi</title>
 <style>
-  :root { --bg:#fafaf7; --fg:#1d1d1b; --muted:#6b6b66; --kart:#fff; --cizgi:#d9d9d2; --vurgu:#2f5d50; --kotu:#a33a2f; --iyi:#2f7d4f; }
-  @media (prefers-color-scheme: dark) { :root { --bg:#161616; --fg:#eeeeea; --muted:#9a9a94; --kart:#1f1f1e; --cizgi:#3a3a37; --vurgu:#6fb59f; --kotu:#e07a6e; --iyi:#6fcf94; } }
+  :root { color-scheme: dark; --bg:#001711; --glow:#1f5a49; --kart:#02251c; --kart2:#0e2f27; --yuz:#1a3a31;
+          --fg:#c6eadd; --muted:#bfc9c3; --cizgi:rgba(152,211,189,.20); --pri:#98d3bd; --krem:#e9e3c9; --krem-yazi:#1e1c0c;
+          --iyi:#84d8a6; --kotu:#ffb4ab; }
   * { box-sizing: border-box; }
-  body { margin:0; font:16px/1.55 system-ui, sans-serif; background:var(--bg); color:var(--fg); }
-  main { max-width:640px; margin:0 auto; padding:20px 16px 60px; }
-  h1 { font-size:1.3rem; margin:0 0 4px; }
-  .alt { color:var(--muted); font-size:.9rem; margin-bottom:16px; }
-  .kart { background:var(--kart); border:1px solid var(--cizgi); border-radius:10px; padding:16px; margin:12px 0; }
-  .rozet { display:inline-block; font-size:.8rem; padding:2px 10px; border-radius:999px; border:1px solid var(--cizgi); color:var(--muted); margin-right:6px; }
+  html { background:var(--bg); }
+  body { margin:0; min-height:100vh; font:17px/1.65 Manrope, system-ui, -apple-system, sans-serif; color:var(--fg);
+         background:radial-gradient(ellipse 700px 420px at 50% 0%, var(--glow) 0%, var(--bg) 75%) no-repeat fixed var(--bg); }
+  main { max-width:560px; margin:0 auto; padding:34px 20px 80px; }
+  h1, h2 { font-family:Newsreader, Georgia, serif; font-weight:500; letter-spacing:-.01em; }
+  h1 { font-size:2.1rem; line-height:1.2; margin:0 0 6px; color:#e6f5ee; }
+  .alt { color:var(--muted); font-size:1rem; margin-bottom:20px; }
+  .kart { background:var(--kart); border-radius:16px; padding:20px; margin:14px 0; box-shadow:0 10px 30px rgba(0,0,0,.28); border:1px solid var(--cizgi); }
+  .kart2 { background:var(--kart2); }
+  .etiket { display:inline-flex; align-items:center; gap:8px; font:500 11px/16px "JetBrains Mono", ui-monospace, monospace; letter-spacing:.08em; text-transform:uppercase;
+            color:var(--pri); background:rgba(31,90,73,.45); padding:5px 12px; border-radius:999px; margin-bottom:12px; }
+  .nokta { width:8px; height:8px; border-radius:50%; background:var(--iyi); display:inline-block; }
+  .nokta.uyari { background:var(--kotu); }
+  .rozet { display:inline-block; font:500 12px/18px "JetBrains Mono", ui-monospace, monospace; padding:4px 12px; border-radius:999px;
+           color:var(--pri); margin:0 6px 8px 0; background:rgba(31,90,73,.40); }
+  .ilerleme { height:4px; border-radius:99px; background:var(--yuz); margin:2px 0 16px; overflow:hidden; }
+  .ilerleme > div { height:100%; background:var(--krem); border-radius:99px; transition:width .3s; }
+  .ozet { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
+  .ozet div { background:var(--kart); border-radius:10px; padding:10px 6px; text-align:center; }
+  .ozet b { display:block; font:500 12px/16px "JetBrains Mono", ui-monospace, monospace; color:var(--pri); }
+  .ozet span { font-size:12px; color:var(--muted); }
   button, select, input { font:inherit; color:inherit; }
-  button { background:var(--vurgu); color:#fff; border:0; border-radius:8px; padding:10px 16px; cursor:pointer; margin:4px 4px 4px 0; }
-  button.ikincil { background:transparent; color:var(--fg); border:1px solid var(--cizgi); }
-  button:disabled { opacity:.45; cursor:not-allowed; }
-  .secenek { display:block; width:100%; text-align:left; background:transparent; color:var(--fg); border:1px solid var(--cizgi); }
-  .secenek.secili { border-color:var(--vurgu); outline:2px solid var(--vurgu); }
-  .dogru { color:var(--iyi); font-weight:600; } .yanlis { color:var(--kotu); font-weight:600; }
-  .ipucu { border-left:3px solid var(--vurgu); padding:6px 12px; margin:10px 0; color:var(--muted); }
-  label { display:block; margin:8px 0 2px; font-size:.9rem; } input[type=number], select, textarea { width:100%; padding:8px; border:1px solid var(--cizgi); border-radius:6px; background:var(--kart); }
-  textarea { height:140px; font:12px/1.4 ui-monospace, monospace; }
+  button { background:var(--krem); color:var(--krem-yazi); font-weight:700; border:0; border-radius:12px; padding:14px 22px; min-height:50px; cursor:pointer; margin:6px 8px 6px 0; }
+  button:active:not(:disabled) { transform:scale(.98); }
+  button.buyuk { width:100%; min-height:56px; margin:10px 0; font-size:1.05rem; }
+  button.ikincil { background:transparent; color:var(--fg); border:1px solid var(--cizgi); font-weight:600; }
+  button:disabled { opacity:.38; cursor:not-allowed; }
+  .secenek { display:block; width:100%; text-align:left; background:var(--yuz); color:var(--fg); border:1px solid transparent; font-weight:500; margin:10px 0; }
+  .secenek:hover { background:#21463b; }
+  .secenek.secili { border-color:var(--krem); background:#25493e; box-shadow:0 0 0 1px var(--krem) inset; }
+  .dogru { color:var(--iyi); font-weight:700; } .yanlis { color:var(--kotu); font-weight:700; }
+  .ipucu { border-left:3px solid var(--krem); padding:10px 14px; margin:14px 0; color:var(--muted); background:rgba(255,255,255,.04); border-radius:0 10px 10px 0; }
+  label { display:block; margin:10px 0 6px; font-size:.95rem; color:var(--muted); font-weight:600; }
+  input[type=number], select, textarea { width:100%; padding:13px; border:0; border-radius:12px; background:var(--yuz); color:var(--fg); min-height:50px; }
+  textarea { height:160px; font:12px/1.5 "JetBrains Mono", ui-monospace, monospace; }
+  .not { font-size:.9rem; color:var(--muted); text-align:center; margin:10px 0 0; }
+  .sahne-kart { position:relative; overflow:hidden; }
+  .sahne-kart::before { content:""; position:absolute; top:-50px; right:-50px; width:170px; height:170px; border-radius:50%; background:rgba(152,211,189,.10); filter:blur(40px); pointer-events:none; }
+  .rozetler { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+  .rozetler .rozet { margin:0; }
+  .rozet.canli::before { content:""; display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--iyi); margin-right:8px; animation:nabiz 1.6s infinite; }
+  @keyframes nabiz { 50% { opacity:.35; } }
+  .rozet.kritik { color:var(--kotu); }
+  .ilerleme-satir { display:flex; justify-content:space-between; font:500 11px/16px "JetBrains Mono", ui-monospace, monospace; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:-8px 2px 16px; }
+  .ilerleme-satir b { color:var(--pri); font-weight:500; }
+  .soru-kutu { background:#002018; border-radius:12px; padding:12px 14px; margin:16px 0 4px; font-family:Newsreader, Georgia, serif; font-size:1.2rem; line-height:1.4; font-weight:600; color:var(--krem); }
+  .secenek { display:flex; align-items:flex-start; gap:14px; }
+  .radyo { flex:0 0 22px; width:22px; height:22px; border-radius:50%; background:var(--kart2); border:2px solid var(--cizgi); margin-top:2px; display:flex; align-items:center; justify-content:center; font-size:13px; color:#00382b; }
+  .secenek.secili .radyo { background:var(--pri); border-color:var(--pri); }
+  .secenek.secili .radyo::after { content:"✓"; font-weight:800; }
+  .secenek.secili { box-shadow:inset 5px 0 0 var(--pri); border-color:transparent; background:#1f3f36; }
+  .eylem { display:flex; gap:12px; margin-top:8px; }
+  .eylem button { margin:0; }
+  .eylem button.ikincil { background:var(--kart2); border:0; color:var(--fg); }
+  .eylem #onayla { flex:1; }
+  .durum-satir { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+  .durum-satir .rozet { margin:0; }
+  .sonuc-pill { display:inline-flex; align-items:center; gap:8px; padding:7px 14px; border-radius:10px; font-weight:700; letter-spacing:.01em; background:rgba(0,93,56,.42); color:#a0f5c1; margin:0; }
+  .sonuc-pill::before { content:"✓"; font-weight:800; }
+  .sonuc-pill.kotu { background:rgba(147,0,10,.38); color:#ffdad6; }
+  .sonuc-pill.kotu::before { content:"!"; }
+  .mini-etiket { display:block; font:700 11px/16px Manrope, system-ui, sans-serif; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:18px 0 2px; }
+  .hamle { font-family:Newsreader, Georgia, serif; font-size:1.3rem; line-height:1.35; font-weight:600; color:var(--krem); margin:0 0 12px; }
+  details.alt-panel { background:#002018; border-radius:12px; padding:12px 14px; margin-top:14px; }
+  details.alt-panel summary { cursor:pointer; font:500 13px/18px "JetBrains Mono", ui-monospace, monospace; color:var(--pri); }
+  details.alt-panel p { margin:10px 0 0; color:var(--fg); }
+  .alinti-kutu { background:var(--kart); border-radius:14px; padding:14px 16px; margin:14px 0; border:1px solid var(--cizgi); }
+  .alinti-kutu blockquote { margin:6px 0 0; font-family:Newsreader, Georgia, serif; font-style:italic; font-size:1.2rem; line-height:1.45; color:var(--krem); }
+  .olcum { margin:14px 0 0; }
+  .olcum .ozet span { font:600 1.05rem/1.4 "JetBrains Mono", ui-monospace, monospace; color:var(--fg); }
+  .olcum small { display:block; margin-top:8px; color:var(--muted); font-size:.85rem; }
+  .bitis-baslik { font-size:1.7rem; line-height:1.3; color:var(--krem); margin:4px 0 8px; }
+  .istatistik { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+  .istat { background:var(--kart2); border-radius:14px; padding:14px; }
+  .istat .e { display:block; font:600 13px/18px Manrope, system-ui, sans-serif; color:var(--muted); }
+  .istat strong { display:block; font-family:Newsreader, Georgia, serif; font-size:2.1rem; line-height:1.2; color:var(--krem); margin:4px 0; }
+  .istat .alt-not { font-size:.85rem; color:var(--muted); }
+  .cubuk { height:6px; border-radius:99px; background:#00110c; overflow:hidden; margin-top:8px; }
+  .cubuk > div { height:100%; background:var(--iyi); border-radius:99px; }
+  .model-secimleri { background:var(--kart2); border-radius:14px; padding:14px; margin:0 0 16px; }
+  .model-secimleri strong { font:500 14px/22px "JetBrains Mono", ui-monospace, monospace; color:var(--pri); }
+  .terminal { background:#00110c; border-radius:14px; overflow:hidden; margin:16px 0 8px; }
+  .terminal-ust { background:#002018; padding:10px 14px; display:flex; align-items:center; gap:12px; }
+  .pencere i { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; background:var(--kotu); }
+  .pencere i:nth-child(2) { background:#ccc7ae; } .pencere i:nth-child(3) { background:var(--iyi); }
+  .terminal .dosya { font:500 12px/16px "JetBrains Mono", ui-monospace, monospace; color:var(--muted); }
+  .terminal textarea { background:transparent; border-radius:0; color:var(--krem); }
   .gizli { display:none !important; }
 </style>
 </head>
@@ -93,7 +167,7 @@ const SAHNELER = [
 // ------------------------------------------------------------------ durum
 let CFG = null, sess = null;
 const D = { seviye:1, i:0, yanlis:0, ipucu:0, secili:-1, degis:0, tiklar:[], sahneBasi:0,
-            davranis:"normal", p:null, kayit:[], sayac:null, ipucuAcik:false };
+            davranis:"normal", p:null, kayit:[], modlar:[], sayac:null, ipucuAcik:false };
 const kok = document.getElementById("kok");
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
@@ -133,16 +207,27 @@ function davranisSec(p) {
 // ------------------------------------------------------------------ ekranlar
 function baslangic() {
   const veri = MOD === "veri";
+  const durum = veri ? "Veri toplama modu · model kapalı" : (sess ? "Model hazır" : "Model yüklenemedi · sabit mod");
+  const nokta = (!veri && !sess) ? "uyari" : "";
+  const aciklama = veri
+    ? "<b>Veri toplama modu.</b> Seçimlerinin zamanlaması ve sırası (süre, karar değiştirme, tıklama hızı) ödev için ölçülür. Ad, e-posta, cihaz veya konum toplanmaz; sonuç yalnızca bu sayfada kalır ve sonda sana CSV olarak verilir."
+    : "Karşına çıkan teknik krizlerde kararlar alacaksın. Hikâye, karar verme biçimine göre anlatım derinliğini, ipucunu ve süre baskısını ayarlar. Davranışların yalnızca tarayıcında hesaplanır, hiçbir yere gönderilmez.";
+  const ozet = veri ? [["Ölçülen", "süre · tıklama"], ["Sahne", "8 karar"], ["Kayıt", "CSV, sende"]]
+                    : [["Anlatım", "kısa · derin"], ["İpucu", "gerekince"], ["Süre", "esnek"]];
   kok.innerHTML = `
     <div class="kart">
-      <p>${veri ? "<b>Veri toplama modu.</b> Seçimlerin yalnızca oyun davranışını ölçmek için kaydedilir; ad, e-posta, cihaz veya konum toplanmaz."
-                : "Bu hikâye, karar verme biçimine göre anlatım derinliğini, ipucunu ve süre baskısını ayarlar."}</p>
-      <label for="seviye">Kendini hangi seviyede görüyorsun?</label>
+      <span class="etiket"><i class="nokta ${nokta}"></i>${durum}</span>
+      <p style="margin:0">${aciklama}</p>
+      <div class="ozet">${ozet.map((o) => `<div><b>${o[0]}</b><span>${o[1]}</span></div>`).join("")}</div>
+    </div>
+    <div class="kart kart2">
+      <label for="seviye" style="margin-top:0">Kendini hangi seviyede görüyorsun?</label>
       <select id="seviye" data-cy="seviye">
         <option value="1">1 — Yeni başlıyorum</option><option value="2">2 — Orta</option><option value="3">3 — İleri</option>
       </select>
-      <p><button data-cy="basla" id="basla">Başla</button></p>
-    </div>`;
+      <p class="not" style="text-align:left">Bu seçim yalnızca modele bir girdi olarak gider; hikâyenin kendisini değiştirmez.</p>
+    </div>
+    <button class="buyuk" data-cy="basla" id="basla">Başla →</button>`;
   $("#basla").onclick = () => { D.seviye = Number($("#seviye").value); D.i = 0; sahneyiGoster(); };
 }
 
@@ -160,19 +245,22 @@ function sahneyiGoster() {
   const ipucuGoster = D.davranis === "derin";
   const ipucuDugme = D.davranis !== "kisa";
   const rozet = MOD === "oyun" && D.p !== null
-    ? `<span class="rozet" data-cy="mod">Mod: ${D.davranis} (p=${D.p.toFixed(2)})</span>` : `<span class="rozet" data-cy="mod">Mod: ${D.davranis}</span>`;
+    ? `<span class="rozet canli" data-cy="mod">Mod: ${D.davranis} (p=${D.p.toFixed(2)})</span>` : `<span class="rozet canli" data-cy="mod">Mod: ${D.davranis}</span>`;
+  const yuzde = (((D.i + 1) / SAHNELER.length) * 100).toFixed(1);
   kok.innerHTML = `
-    <div class="kart">
-      <div>${rozet}<span class="rozet">Sahne ${D.i + 1}/${SAHNELER.length}</span>
-        <span class="rozet ${sayacGoster ? "" : "gizli"}" id="sayac" data-cy="sayac">⏱ ${SURE_LIMITI_SN}</span></div>
-      <p data-cy="anlatim">${esc(anlatimMetni(s))}</p>
-      <p><b>${esc(s.soru)}</b></p>
-      ${s.secenekler.map((t, k) => `<button class="secenek" data-cy="secenek-${k}" data-k="${k}">${esc(t)}</button>`).join("")}
-      <div class="ipucu ${ipucuGoster ? "" : "gizli"}" id="ipucu" data-cy="ipucu-kutu">${esc(s.ipucu)}</div>
-      <p>
-        <button data-cy="onayla" id="onayla" disabled>Onayla</button>
-        <button class="ikincil ${ipucuDugme ? "" : "gizli"}" data-cy="ipucu-btn" id="ipucuBtn">İpucu</button>
-      </p>
+    <div class="kart sahne-kart">
+      <div class="rozetler">${rozet}<span class="rozet">Sahne ${D.i + 1}/${SAHNELER.length}</span>
+        <span class="rozet ${sayacGoster ? "" : "gizli"}" id="sayac" data-cy="sayac">⏱ ${SURE_LIMITI_SN}s</span></div>
+      <div class="ilerleme"><div style="width:${yuzde}%"></div></div>
+      <div class="ilerleme-satir"><span>İlerleme</span><b>${yuzde}%</b></div>
+      <p data-cy="anlatim" style="margin:0">${esc(anlatimMetni(s))}</p>
+      <div class="soru-kutu">${esc(s.soru)}</div>
+    </div>
+    ${s.secenekler.map((t, k) => `<button class="secenek" data-cy="secenek-${k}" data-k="${k}"><span class="radyo"></span><span>${esc(t)}</span></button>`).join("")}
+    <div class="ipucu ${ipucuGoster ? "" : "gizli"}" id="ipucu" data-cy="ipucu-kutu"><b>İpucu:</b> ${esc(s.ipucu)}</div>
+    <div class="eylem">
+      <button class="ikincil ${ipucuDugme ? "" : "gizli"}" data-cy="ipucu-btn" id="ipucuBtn">İpucu</button>
+      <button data-cy="onayla" id="onayla" disabled>Onayla →</button>
     </div>`;
   document.querySelectorAll(".secenek").forEach((b) => (b.onclick = () => secenekTikla(Number(b.dataset.k))));
   $("#onayla").onclick = onayla;
@@ -180,7 +268,7 @@ function sahneyiGoster() {
   clearInterval(D.sayac);
   D.sayac = setInterval(() => {
     const kalan = Math.max(0, SURE_LIMITI_SN - Math.floor((performance.now() - D.sahneBasi) / 1000));
-    const el = $("#sayac"); if (el) el.textContent = "⏱ " + kalan;
+    const el = $("#sayac"); if (el) { el.textContent = "⏱ " + kalan + "s"; el.classList.toggle("kritik", kalan <= 5); }
   }, 250);
 }
 
@@ -217,14 +305,32 @@ async function onayla() {
   D.kayit.push({ ...satir, dogru });
   if (!dogru) D.yanlis++;
   if (MOD === "oyun" && sess) {                         // model kararı bir SONRAKİ sahnenin davranışını değiştirir
-    try { D.p = await tahmin(satir); D.davranis = davranisSec(D.p); } catch (e) { console.error(e); }
+    try { D.p = await tahmin(satir); D.davranis = davranisSec(D.p); D.modlar.push(D.davranis); } catch (e) { console.error(e); }
   }
+  const secilenMetin = s.secenekler[D.secili];
+  const dogruMetin = s.secenekler[s.dogru];
+  const olcum = MOD === "oyun" ? `
+    <div class="olcum">
+      <span class="mini-etiket" style="margin-top:0">Senin ölçümlerin</span>
+      <div class="ozet">
+        <div><b>Karar süresi</b><span>${satir.karar_suresi_sn.toFixed(1)} sn</span></div>
+        <div><b>Seçim değişimi</b><span>${satir.karar_degistirme_sayisi}</span></div>
+        <div><b>Model</b><span>${D.p !== null ? "p=" + D.p.toFixed(2) : "—"}</span></div>
+      </div>
+      ${D.p !== null ? `<small>Sonraki sahnenin modu: <b>${D.davranis}</b></small>` : ""}
+    </div>` : "";
   kok.innerHTML = `
+    <div class="durum-satir"><span class="rozet">Sahne ${D.i + 1}/${SAHNELER.length} · Değerlendirme</span></div>
     <div class="kart">
-      <p class="${dogru ? "dogru" : "yanlis"}" data-cy="geri-bildirim">${dogru ? "Doğru karar." : "Pek iyi bir seçim değil."}</p>
-      <p>${esc(s.aciklama)}</p>
-      <button data-cy="devam" id="devam">${D.i + 1 < SAHNELER.length ? "Devam" : "Bitir"}</button>
-    </div>`;
+      <p class="sonuc-pill ${dogru ? "" : "kotu"}" data-cy="geri-bildirim">${dogru ? "Doğru karar." : "Pek iyi bir seçim değil."}</p>
+      <span class="mini-etiket">Senin hamlen</span>
+      <h2 class="hamle">${esc(secilenMetin)}</h2>
+      <p style="margin:0">${esc(s.aciklama)}</p>
+      ${dogru ? "" : `<details class="alt-panel" open><summary>Doğru yaklaşım neydi?</summary><p>${esc(dogruMetin)}</p></details>`}
+    </div>
+    <div class="alinti-kutu"><span class="mini-etiket" style="margin-top:0">Akılda kalsın</span><blockquote>“${esc(s.ipucu)}”</blockquote></div>
+    ${olcum}
+    <button class="buyuk" data-cy="devam" id="devam">${D.i + 1 < SAHNELER.length ? "Devam →" : "Bitir →"}</button>`;
   $("#devam").onclick = () => { D.i++; D.i < SAHNELER.length ? sahneyiGoster() : bitis(); };
 }
 
@@ -248,22 +354,47 @@ function csvUret() {
 }
 
 function bitis() {
+  const n = SAHNELER.length;
   const dogruSay = D.kayit.filter((k) => k.dogru).length;
-  let ek = "";
-  let csv = "";
+  const yuzde = Math.round((dogruSay / n) * 1000) / 10;
+  let csv = "", csvKutu = "", modKutu = "";
   if (MOD === "veri") {
     csv = csvUret();
-    ek = `<p>Teşekkürler! Aşağıdaki satırları ya da dosyayı oyunu yaptıran kişiye gönder (kişisel bilgi içermez).</p>
-          <textarea readonly data-cy="csv">${esc(csv)}</textarea>
-          <p><button id="indir" data-cy="indir">CSV indir</button></p>`;
+    csvKutu = `
+      <div class="terminal">
+        <div class="terminal-ust"><span class="pencere"><i></i><i></i><i></i></span><span class="dosya">oturum.csv</span></div>
+        <textarea readonly data-cy="csv">${esc(csv)}</textarea>
+      </div>
+      <p class="not" style="text-align:left">Teşekkürler! Bu yazıyı oyunu yaptıran kişiye gönder; kişisel bilgi içermez. Sayfayı yenilersen bu oturum kaybolur, önce kopyala.</p>
+      <button class="buyuk" id="kopyala" data-cy="kopyala">Yazıyı kopyala</button>
+      <button class="buyuk ikincil" id="indir" data-cy="indir">CSV indir</button>`;
+  } else if (D.modlar.length) {
+    const say = (m) => D.modlar.filter((x) => x === m).length;
+    modKutu = `<div class="model-secimleri"><span class="mini-etiket" style="margin-top:0">Modelin seçimleri</span>
+      <strong>derin ×${say("derin")} · normal ×${say("normal")} · kısa ×${say("kisa")}</strong></div>`;
   }
-  kok.innerHTML = `<div class="kart" data-cy="bitis"><p><b>Hikâye bitti.</b> ${SAHNELER.length} kararın ${dogruSay} tanesi doğruydu.</p>${ek}
-    <p><button class="ikincil" onclick="location.reload()">Yeniden oyna</button></p></div>`;
+  kok.innerHTML = `
+    <div data-cy="bitis">
+      <div class="durum-satir"><span class="rozet canli">Hikâye tamamlandı</span></div>
+      <h2 class="bitis-baslik">Hikâye bitti. ${n} kararın ${dogruSay} tanesi doğruydu.</h2>
+      <div class="istatistik">
+        <div class="istat"><span class="e">Başarı oranı</span><strong>%${yuzde}</strong><div class="cubuk"><div style="width:${yuzde}%"></div></div></div>
+        <div class="istat"><span class="e">Doğru kararlar</span><strong>${dogruSay} / ${n}</strong><span class="alt-not">${n - dogruSay} tanesi daha iyi olabilirdi</span></div>
+      </div>
+      ${modKutu}
+      ${csvKutu}
+      <button class="buyuk ikincil" onclick="location.reload()">Yeniden oyna</button>
+    </div>`;
   if (MOD === "veri") {
     $("#indir").onclick = () => {
       const a = document.createElement("a");
       a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
       a.download = "oturum.csv"; a.click();
+    };
+    $("#kopyala").onclick = async () => {
+      try { await navigator.clipboard.writeText(csv); }
+      catch (e) { const k = document.querySelector('[data-cy="csv"]'); k.select(); document.execCommand("copy"); }
+      $("#kopyala").textContent = "Kopyalandı ✓";
     };
   }
 }
