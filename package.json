@@ -1,0 +1,10 @@
+{
+  "name": "primer-v2",
+  "private": true,
+  "scripts": {
+    "sunucu": "python3 -m http.server 8080",
+    "test": "cypress run",
+    "cypress": "cypress open"
+  },
+  "devDependencies": { "cypress": "^13.0.0" }
+}

@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Primer v2 — Uyumlanan Mühendis Hikâyesi</title>
+<style>
+  :root { --bg:#fafaf7; --fg:#1d1d1b; --muted:#6b6b66; --kart:#fff; --cizgi:#d9d9d2; --vurgu:#2f5d50; --kotu:#a33a2f; --iyi:#2f7d4f; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#161616; --fg:#eeeeea; --muted:#9a9a94; --kart:#1f1f1e; --cizgi:#3a3a37; --vurgu:#6fb59f; --kotu:#e07a6e; --iyi:#6fcf94; } }
+  * { box-sizing: border-box; }
+  body { margin:0; font:16px/1.55 system-ui, sans-serif; background:var(--bg); color:var(--fg); }
+  main { max-width:640px; margin:0 auto; padding:20px 16px 60px; }
+  h1 { font-size:1.3rem; margin:0 0 4px; }
+  .alt { color:var(--muted); font-size:.9rem; margin-bottom:16px; }
+  .kart { background:var(--kart); border:1px solid var(--cizgi); border-radius:10px; padding:16px; margin:12px 0; }
+  .rozet { display:inline-block; font-size:.8rem; padding:2px 10px; border-radius:999px; border:1px solid var(--cizgi); color:var(--muted); margin-right:6px; }
+  button, select, input { font:inherit; color:inherit; }
+  button { background:var(--vurgu); color:#fff; border:0; border-radius:8px; padding:10px 16px; cursor:pointer; margin:4px 4px 4px 0; }
+  button.ikincil { background:transparent; color:var(--fg); border:1px solid var(--cizgi); }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  .secenek { display:block; width:100%; text-align:left; background:transparent; color:var(--fg); border:1px solid var(--cizgi); }
+  .secenek.secili { border-color:var(--vurgu); outline:2px solid var(--vurgu); }
+  .dogru { color:var(--iyi); font-weight:600; } .yanlis { color:var(--kotu); font-weight:600; }
+  .ipucu { border-left:3px solid var(--vurgu); padding:6px 12px; margin:10px 0; color:var(--muted); }
+  label { display:block; margin:8px 0 2px; font-size:.9rem; } input[type=number], select, textarea { width:100%; padding:8px; border:1px solid var(--cizgi); border-radius:6px; background:var(--kart); }
+  textarea { height:140px; font:12px/1.4 ui-monospace, monospace; }
+  .gizli { display:none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>The Primer v2</h1>
+  <div class="alt" id="altbaslik">Yazılım mühendisi olma yolunda, seninle uyumlanan hikâye.</div>
+  <div id="kok"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.min.js"></script>
+<script>
+"use strict";
+// ------------------------------------------------------------------ ayarlar
+const Q = new URLSearchParams(location.search);
+const MOD = Q.get("mod") === "veri" ? "veri" : (Q.get("test") ? "test" : "oyun");
+// Hugging Face'e yükledikten sonra commit'e sabit URL'yi buraya yazın (RELEASE.md'ye bakın):
+const HF_MODEL_URL = "https://huggingface.co/burcuuysal/primer-v2-zorlanma/resolve/7e2b1e034c9f7798786adaba36698bb8dffbe5c0/model.onnx";
+const MODEL_URL = Q.get("model") || HF_MODEL_URL || "model/model.onnx";
+const CONFIG_URL = Q.get("config") || "model/config.json";
+const SURE_LIMITI_SN = 20;   // yalnızca görsel geri sayım; oyunu zorla bitirmez
+
+// ------------------------------------------------------------------ hikâye
+const SAHNELER = [
+  { ozet:"Üretimde sayfa açılmıyor.",
+    anlatim:"İlk iş günü, sabah 9. Ekibin ortak kanalında kırmızı bir uyarı var: üretimde ana sayfa açılmıyor.",
+    derin:" Bir yazılım mühendisi önce tahmin yürütmez, kanıt toplar: hata mesajı nedir, ne zaman başladı, son değişiklik neydi? Bu bilgilerin çoğu loglarda bulunur.",
+    soru:"İlk ne yaparsın?", secenekler:["Sunucuyu yeniden başlatırım","Loglara bakıp hatanın ne zaman başladığını bulurum","Ana sayfa kodunu baştan yazarım"],
+    dogru:1, ipucu:"Tahmin etmeden önce elindeki kanıta bak.", aciklama:"Loglar kanıttır; yeniden başlatmak belirtiyi gizler, baştan yazmak nedeni bilmeden risk alır." },
+  { ozet:"Yeni özellik için test.",
+    anlatim:"Sorun çözüldü. Şimdi yeni bir 'favorilere ekle' özelliği yazacaksın.",
+    derin:" Test, kodun doğru olduğunu sonradan kanıtlamak için değil, ne yapmak istediğini önceden netleştirmek için de vardır. Beklenen davranışı yazmak tasarımı iyileştirir.",
+    soru:"Testi ne zaman yazarsın?", secenekler:["Kodla birlikte (veya önce), kabul örnekleriyle","En son, zaman kalırsa","Test yazmam, elle denerim"],
+    dogru:0, ipucu:"Kabul örneği = beklenen davranışın somut hali.", aciklama:"Test, beklenen davranışı baştan sabitler ve sonraki değişikliklerde (regresyon) seni korur." },
+  { ozet:"800 satırlık PR.",
+    anlatim:"Takım arkadaşın 800 satırlık bir pull request açtı ve senden inceleme istedi.",
+    derin:" İnsanlar büyük değişikliği dikkatle okuyamaz; hatalar gözden kaçar. Küçük, tek amaçlı değişiklikler hem daha hızlı incelenir hem de geri almak kolaydır.",
+    soru:"Ne yaparsın?", secenekler:["Hemen onaylarım","Daha küçük, tek amaçlı parçalara bölmesini isterim","Tamamını yeniden yazarım"],
+    dogru:1, ipucu:"İnceleme yapılabilirliği, değişikliğin boyutuyla ilgilidir.", aciklama:"Küçük PR'lar daha iyi incelenir ve sorun çıkarsa kolay geri alınır." },
+  { ozet:"Cuma 18:00 dağıtımı.",
+    anlatim:"Yeni sürüm hazır. Saat Cuma 18:00 ve herkes eve gitmek üzere.",
+    derin:" Yeni sürümü herkese birden açmak, hata varsa herkesi etkiler. Önce küçük bir kitleye açıp (kanarya) izlemek, hasarı sınırlar ve geri dönüş yolunu açık tutar.",
+    soru:"Nasıl yayınlarsın?", secenekler:["Hemen herkese açarım","Önce trafiğin %5'ine açıp metrikleri izlerim","Pazartesiye kadar hiç yayınlamam, bakmam da"],
+    dogru:1, ipucu:"Hasarı sınırlamanın yolu, etkilenen kitleyi küçük tutmaktır.", aciklama:"Kanarya dağıtımı, riski küçük bir kitleyle sınırlar ve gerçek veriyle doğrulama sağlar." },
+  { ozet:"Yeni sürüm hata veriyor.",
+    anlatim:"Dağıtımdan 10 dakika sonra hata oranı yükseliyor.",
+    derin:" Önceliğin nedeni bulmak değil, kullanıcıya zarar vermeyi durdurmaktır. Sürümü commit'e sabitlediysen önceki sürüme dönmek tek adımdır; nedeni sonra araştırırsın.",
+    soru:"Önce ne yaparsın?", secenekler:["Hatayı canlıda düzeltmeye çalışırım","Önceki sürüme dönerim (rollback), sonra nedeni araştırırım","Kimseye söylemem"],
+    dogru:1, ipucu:"Önce zararı durdur, sonra nedeni bul.", aciklama:"Geri alma (rollback) planı, sorunu büyütmeden önceki bilinen iyi duruma dönmeyi sağlar." },
+  { ozet:"Loglarda e-posta.",
+    anlatim:"Hata ayıklarken kullanıcıların e-posta adreslerini loglamak işini kolaylaştıracak gibi görünüyor.",
+    derin:" Kişisel veri, KVKK kapsamındadır ve gereğinden fazla toplanmamalıdır. Bir hatayı bulmak için kimliği bilmen gerekmez; rastgele bir oturum kimliği yeterlidir.",
+    soru:"Ne yaparsın?", secenekler:["E-postaları loglarım","Rastgele oturum kimliği loglar, kişisel veriyi toplamam","Telefon numaralarını da eklerim"],
+    dogru:1, ipucu:"Hata bulmak için kimlik gerekmez.", aciklama:"Veri minimizasyonu: yalnızca amaç için gereken kadar veri, mümkünse kimliksiz toplanır." },
+  { ozet:"Ajan 300 satır yazdı.",
+    anlatim:"Kodlama ajanın senin için 300 satırlık bir modül yazdı ve 'tamam' diyor.",
+    derin:" Ajanı yöneten mühendis sensin. Kodun doğruluğu, ajanın özgüveniyle değil, senin okumana ve testlerine bağlıdır; sorumluluk sende kalır.",
+    soru:"Ne yaparsın?", secenekler:["Doğrudan birleştirir, yayınlarım","Okurum, testleri çalıştırır, anlamadığımı sorarım","Ajana güvenip yeni görev veririm"],
+    dogru:1, ipucu:"Sorumluluk, kodu yazandan çok onu yayınlayandadır.", aciklama:"Ajan araçtır; doğrulama (okuma, test) senin işin." },
+  { ozet:"'Daha hızlı olsun.'",
+    anlatim:"Müşteri toplantıda sadece şunu söyledi: 'Uygulama daha hızlı olsun.'",
+    derin:" Vizyon mühendisliği, çözmeden önce gerçek problemi anlamaktır: hangi ekran, kaç saniye, hangi cihazda yavaş? Yanlış problemi hızlı çözmek zaman kaybıdır.",
+    soru:"Ne yaparsın?", secenekler:["Tüm kodu optimize etmeye başlarım","Hangi akışın, ne kadar yavaş olduğunu sorup ölçerim","Daha güçlü sunucu alırım"],
+    dogru:1, ipucu:"Çözmeden önce problemi ölç ve tanımla.", aciklama:"Gerçek problemi anlamak, çözüm zamanının büyük kısmından daha değerlidir." }
+];
+
+// ------------------------------------------------------------------ durum
+let CFG = null, sess = null;
+const D = { seviye:1, i:0, yanlis:0, ipucu:0, secili:-1, degis:0, tiklar:[], sahneBasi:0,
+            davranis:"normal", p:null, kayit:[], sayac:null, ipucuAcik:false };
+const kok = document.getElementById("kok");
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+
+// ------------------------------------------------------------------ model
+async function modeliYukle() {
+  try {
+    CFG = await (await fetch(CONFIG_URL)).json();
+    ort.env.wasm.numThreads = 1;
+    try {
+      sess = await ort.InferenceSession.create(MODEL_URL);
+      document.body.dataset.modelKaynak = MODEL_URL.startsWith("http") ? "hf-commit" : "yerel";
+    } catch (e1) {
+      console.warn("Uzak model indirilemedi, yerel yedek deneniyor:", e1);
+      sess = await ort.InferenceSession.create("model/model.onnx");   // aynı model dosyası (yedek)
+      document.body.dataset.modelKaynak = "yerel-yedek";
+    }
+    document.body.dataset.model = "hazir";
+  } catch (e) {
+    console.error("Model yüklenemedi:", e);
+    document.body.dataset.model = "hata";
+  }
+}
+async function tahmin(girdi) {
+  const x = Float32Array.from(CFG.ozellikler.map((k) => Number(girdi[k])));
+  const t = new ort.Tensor("float32", x, [1, x.length]);
+  const r = await sess.run({ [CFG.girdi_adi]: t });
+  return r[CFG.cikti_adi].data[0];
+}
+function davranisSec(p) {
+  const e = CFG.karar_esikleri;
+  if (p >= e.derin_anlatim_ve_ipucu) return "derin";   // süre baskısı kalkar, ipucu açılır, anlatım derinleşir
+  if (p < e.kisa_anlatim) return "kisa";               // kısa anlatım, süre baskısı açık, ipucu gizli
+  return "normal";
+}
+
+// ------------------------------------------------------------------ ekranlar
+function baslangic() {
+  const veri = MOD === "veri";
+  kok.innerHTML = `
+    <div class="kart">
+      <p>${veri ? "<b>Veri toplama modu.</b> Seçimlerin yalnızca oyun davranışını ölçmek için kaydedilir; ad, e-posta, cihaz veya konum toplanmaz."
+                : "Bu hikâye, karar verme biçimine göre anlatım derinliğini, ipucunu ve süre baskısını ayarlar."}</p>
+      <label for="seviye">Kendini hangi seviyede görüyorsun?</label>
+      <select id="seviye" data-cy="seviye">
+        <option value="1">1 — Yeni başlıyorum</option><option value="2">2 — Orta</option><option value="3">3 — İleri</option>
+      </select>
+      <p><button data-cy="basla" id="basla">Başla</button></p>
+    </div>`;
+  $("#basla").onclick = () => { D.seviye = Number($("#seviye").value); D.i = 0; sahneyiGoster(); };
+}
+
+function anlatimMetni(s) {
+  if (D.davranis === "kisa") return s.ozet;
+  if (D.davranis === "derin") return s.anlatim + s.derin;
+  return s.anlatim;
+}
+
+function sahneyiGoster() {
+  const s = SAHNELER[D.i];
+  D.secili = -1; D.degis = 0; D.ipucuAcik = false; D.tiklar = [];
+  D.sahneBasi = performance.now();
+  const sayacGoster = D.davranis !== "derin";
+  const ipucuGoster = D.davranis === "derin";
+  const ipucuDugme = D.davranis !== "kisa";
+  const rozet = MOD === "oyun" && D.p !== null
+    ? `<span class="rozet" data-cy="mod">Mod: ${D.davranis} (p=${D.p.toFixed(2)})</span>` : `<span class="rozet" data-cy="mod">Mod: ${D.davranis}</span>`;
+  kok.innerHTML = `
+    <div class="kart">
+      <div>${rozet}<span class="rozet">Sahne ${D.i + 1}/${SAHNELER.length}</span>
+        <span class="rozet ${sayacGoster ? "" : "gizli"}" id="sayac" data-cy="sayac">⏱ ${SURE_LIMITI_SN}</span></div>
+      <p data-cy="anlatim">${esc(anlatimMetni(s))}</p>
+      <p><b>${esc(s.soru)}</b></p>
+      ${s.secenekler.map((t, k) => `<button class="secenek" data-cy="secenek-${k}" data-k="${k}">${esc(t)}</button>`).join("")}
+      <div class="ipucu ${ipucuGoster ? "" : "gizli"}" id="ipucu" data-cy="ipucu-kutu">${esc(s.ipucu)}</div>
+      <p>
+        <button data-cy="onayla" id="onayla" disabled>Onayla</button>
+        <button class="ikincil ${ipucuDugme ? "" : "gizli"}" data-cy="ipucu-btn" id="ipucuBtn">İpucu</button>
+      </p>
+    </div>`;
+  document.querySelectorAll(".secenek").forEach((b) => (b.onclick = () => secenekTikla(Number(b.dataset.k))));
+  $("#onayla").onclick = onayla;
+  $("#ipucuBtn").onclick = ipucuTikla;
+  clearInterval(D.sayac);
+  D.sayac = setInterval(() => {
+    const kalan = Math.max(0, SURE_LIMITI_SN - Math.floor((performance.now() - D.sahneBasi) / 1000));
+    const el = $("#sayac"); if (el) el.textContent = "⏱ " + kalan;
+  }, 250);
+}
+
+function secenekTikla(k) {
+  if (D.secili !== -1 && D.secili !== k) D.degis++;     // karar değiştirme
+  D.secili = k; D.tiklar.push(performance.now());
+  document.querySelectorAll(".secenek").forEach((b) => b.classList.toggle("secili", Number(b.dataset.k) === k));
+  $("#onayla").disabled = false;
+}
+
+function ipucuTikla() {
+  D.tiklar.push(performance.now());
+  if (!D.ipucuAcik && D.davranis !== "derin") { D.ipucu++; }   // otomatik açılan ipucu, oyuncu isteği sayılmaz
+  D.ipucuAcik = true;
+  $("#ipucu").classList.remove("gizli");
+}
+
+async function onayla() {
+  clearInterval(D.sayac);
+  const s = SAHNELER[D.i], simdi = performance.now();
+  const dogru = D.secili === s.dogru;
+  D.tiklar.push(simdi);                                   // onay tıklaması da bir tıklamadır
+  const araliklar = D.tiklar.slice(1).map((t, j) => t - D.tiklar[j]);
+  const ortAralik = araliklar.reduce((a, b) => a + b, 0) / araliklar.length;   // ≥ 2 tıklama olduğundan en az 1 aralık var
+  const satir = {
+    seviye: D.seviye,
+    karar_suresi_sn: Number(Math.min(120, (simdi - D.sahneBasi) / 1000).toFixed(2)),
+    karar_degistirme_sayisi: Math.min(10, D.degis),
+    tiklama_araligi_ms: Math.round(Math.min(5000, ortAralik)),
+    onceki_yanlis_sayisi: Math.min(20, D.yanlis),
+    ipucu_sayisi: Math.min(10, D.ipucu),
+    sahne_no: D.i + 1,
+  };
+  D.kayit.push({ ...satir, dogru });
+  if (!dogru) D.yanlis++;
+  if (MOD === "oyun" && sess) {                         // model kararı bir SONRAKİ sahnenin davranışını değiştirir
+    try { D.p = await tahmin(satir); D.davranis = davranisSec(D.p); } catch (e) { console.error(e); }
+  }
+  kok.innerHTML = `
+    <div class="kart">
+      <p class="${dogru ? "dogru" : "yanlis"}" data-cy="geri-bildirim">${dogru ? "Doğru karar." : "Pek iyi bir seçim değil."}</p>
+      <p>${esc(s.aciklama)}</p>
+      <button data-cy="devam" id="devam">${D.i + 1 < SAHNELER.length ? "Devam" : "Bitir"}</button>
+    </div>`;
+  $("#devam").onclick = () => { D.i++; D.i < SAHNELER.length ? sahneyiGoster() : bitis(); };
+}
+
+// ------------------------------------------------------------------ veri çıktısı
+function rastgeleId() {
+  const b = new Uint8Array(6); crypto.getRandomValues(b);
+  return Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("");
+}
+function csvUret() {
+  const id = rastgeleId(), baslik = ["oturum_id", "seviye", "karar_suresi_sn", "karar_degistirme_sayisi",
+    "tiklama_araligi_ms", "onceki_yanlis_sayisi", "ipucu_sayisi", "sahne_no", "zorlandi", "kaynak"];
+  const satirlar = [];
+  for (let i = 0; i < D.kayit.length - 1; i++) {        // son karar: geleceği yok, alınmaz (spec.md)
+    const k = D.kayit[i];
+    const gelecek = D.kayit.slice(i + 1, i + 3);
+    const zorlandi = gelecek.some((g) => !g.dogru) ? 1 : 0;
+    satirlar.push([id, k.seviye, k.karar_suresi_sn, k.karar_degistirme_sayisi, k.tiklama_araligi_ms,
+                   k.onceki_yanlis_sayisi, k.ipucu_sayisi, k.sahne_no, zorlandi, "gercek"].join(","));
+  }
+  return [baslik.join(","), ...satirlar].join("\n") + "\n";
+}
+
+function bitis() {
+  const dogruSay = D.kayit.filter((k) => k.dogru).length;
+  let ek = "";
+  let csv = "";
+  if (MOD === "veri") {
+    csv = csvUret();
+    ek = `<p>Teşekkürler! Aşağıdaki satırları ya da dosyayı oyunu yaptıran kişiye gönder (kişisel bilgi içermez).</p>
+          <textarea readonly data-cy="csv">${esc(csv)}</textarea>
+          <p><button id="indir" data-cy="indir">CSV indir</button></p>`;
+  }
+  kok.innerHTML = `<div class="kart" data-cy="bitis"><p><b>Hikâye bitti.</b> ${SAHNELER.length} kararın ${dogruSay} tanesi doğruydu.</p>${ek}
+    <p><button class="ikincil" onclick="location.reload()">Yeniden oyna</button></p></div>`;
+  if (MOD === "veri") {
+    $("#indir").onclick = () => {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+      a.download = "oturum.csv"; a.click();
+    };
+  }
+}
+
+// ------------------------------------------------------------------ test paneli (diferansiyel test)
+function testPaneli() {
+  document.getElementById("altbaslik").textContent = "Test paneli (diferansiyel test için).";
+  const oz = CFG.ozellikler;
+  kok.innerHTML = `<div class="kart">
+    ${oz.map((k) => `<label for="in-${k}">${k}</label><input type="number" step="any" id="in-${k}" data-cy="in-${k}" value="0">`).join("")}
+    <p><button data-cy="hesapla" id="hesapla">Hesapla</button></p>
+    <p>p = <span data-cy="p" id="pSonuc">—</span></p></div>`;
+  $("#hesapla").onclick = async () => {
+    const g = {}; oz.forEach((k) => (g[k] = Number($("#in-" + k).value)));
+    $("#pSonuc").textContent = (await tahmin(g)).toFixed(8);
+  };
+}
+
+// ------------------------------------------------------------------ başlat
+(async function () {
+  if (MOD === "veri") { D.davranis = "normal"; baslangic(); return; }   // veri toplarken model davranışı kapalı
+  kok.innerHTML = '<div class="kart" data-cy="yukleniyor">Model yükleniyor…</div>';
+  await modeliYukle();
+  if (MOD === "test") { sess ? testPaneli() : (kok.textContent = "Model yüklenemedi."); return; }
+  baslangic();
+})();
+</script>
+</body>
+</html>

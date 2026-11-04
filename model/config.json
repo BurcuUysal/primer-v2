@@ -1,0 +1,50 @@
+{
+  "surum": "v2.0",
+  "girdi_adi": "girdi",
+  "cikti_adi": "p",
+  "ozellikler": [
+    "seviye",
+    "karar_suresi_sn",
+    "karar_degistirme_sayisi",
+    "tiklama_araligi_ms",
+    "onceki_yanlis_sayisi",
+    "ipucu_sayisi",
+    "sahne_no"
+  ],
+  "siniflar": {
+    "0": "zorlanmiyor",
+    "1": "zorlaniyor"
+  },
+  "karar_esikleri": {
+    "derin_anlatim_ve_ipucu": 0.6,
+    "kisa_anlatim": 0.3
+  },
+  "karar_kesme_noktasi": 0.4,
+  "kabul_esikleri": {
+    "recall": 0.7,
+    "f1": 0.65,
+    "roc_auc": 0.75,
+    "onnx_fark_max": 0.0001
+  },
+  "metrikler": {
+    "recall": 0.7315,
+    "f1": 0.6864,
+    "roc_auc": 0.7758,
+    "n_egitim": 2565,
+    "n_test": 855,
+    "pozitif_oran_test": 0.4269,
+    "onnx_sklearn_max_fark": 1.1450301717896849e-07
+  },
+  "veri": {
+    "dosya": "data/oturumlar.csv",
+    "satir": 3420,
+    "kaynak_dagilimi": {
+      "sentetik": 3420
+    }
+  },
+  "egitim": {
+    "model": "LogisticRegression",
+    "random_state": 42,
+    "olcekleyici": "StandardScaler (ağırlıklara katlı)"
+  }
+}

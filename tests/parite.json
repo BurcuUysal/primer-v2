@@ -1,0 +1,62 @@
+[
+  {
+    "girdi": {
+      "seviye": 2,
+      "karar_suresi_sn": 45,
+      "karar_degistirme_sayisi": 4,
+      "tiklama_araligi_ms": 500,
+      "onceki_yanlis_sayisi": 3,
+      "ipucu_sayisi": 2,
+      "sahne_no": 8
+    },
+    "p": 0.8872999548912048
+  },
+  {
+    "girdi": {
+      "seviye": 1,
+      "karar_suresi_sn": 4,
+      "karar_degistirme_sayisi": 0,
+      "tiklama_araligi_ms": 1100,
+      "onceki_yanlis_sayisi": 0,
+      "ipucu_sayisi": 0,
+      "sahne_no": 2
+    },
+    "p": 0.26008203625679016
+  },
+  {
+    "girdi": {
+      "seviye": 3,
+      "karar_suresi_sn": 20,
+      "karar_degistirme_sayisi": 2,
+      "tiklama_araligi_ms": 800,
+      "onceki_yanlis_sayisi": 1,
+      "ipucu_sayisi": 1,
+      "sahne_no": 12
+    },
+    "p": 0.452384889125824
+  },
+  {
+    "girdi": {
+      "seviye": 1,
+      "karar_suresi_sn": 12,
+      "karar_degistirme_sayisi": 1,
+      "tiklama_araligi_ms": 900,
+      "onceki_yanlis_sayisi": 2,
+      "ipucu_sayisi": 0,
+      "sahne_no": 5
+    },
+    "p": 0.3900676369667053
+  },
+  {
+    "girdi": {
+      "seviye": 2,
+      "karar_suresi_sn": 30,
+      "karar_degistirme_sayisi": 3,
+      "tiklama_araligi_ms": 600,
+      "onceki_yanlis_sayisi": 5,
+      "ipucu_sayisi": 3,
+      "sahne_no": 15
+    },
+    "p": 0.777565598487854
+  }
+]
