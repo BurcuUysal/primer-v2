@@ -27,19 +27,20 @@
     "onnx_fark_max": 0.0001
   },
   "metrikler": {
-    "recall": 0.7315,
-    "f1": 0.6864,
-    "roc_auc": 0.7758,
-    "n_egitim": 2565,
-    "n_test": 855,
-    "pozitif_oran_test": 0.4269,
-    "onnx_sklearn_max_fark": 1.1450301717896849e-07
+    "recall": 0.7328,
+    "f1": 0.6977,
+    "roc_auc": 0.7818,
+    "n_egitim": 2574,
+    "n_test": 881,
+    "pozitif_oran_test": 0.4291,
+    "onnx_sklearn_max_fark": 1.2763207901667073e-07
   },
   "veri": {
     "dosya": "data/oturumlar.csv",
-    "satir": 3420,
+    "satir": 3455,
     "kaynak_dagilimi": {
-      "sentetik": 3420
+      "sentetik": 3420,
+      "gercek": 35
     }
   },
   "egitim": {

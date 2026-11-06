@@ -1,0 +1,8 @@
+oturum_id,seviye,karar_suresi_sn,karar_degistirme_sayisi,tiklama_araligi_ms,onceki_yanlis_sayisi,ipucu_sayisi,sahne_no,zorlandi,kaynak
+971f5461680e,1,1.83,0,784,0,0,1,0,gercek
+971f5461680e,1,5.92,0,901,1,0,2,0,gercek
+971f5461680e,1,6.6,0,983,1,0,3,0,gercek
+971f5461680e,1,9.07,0,800,1,0,4,0,gercek
+971f5461680e,1,4.85,0,652,1,0,5,0,gercek
+971f5461680e,1,3.95,1,1375,1,0,6,0,gercek
+971f5461680e,1,4.53,0,817,1,0,7,0,gercek

@@ -63,3 +63,7 @@ Ad, e-posta, cihaz kimliği, konum **toplanmaz**. `oturum_id` rastgele üretilir
 Karar: **eşikler değiştirilmedi**. Spec'teki "zorlanan oyuncuyu kaçırmamak öncelik" ilkesine dayanarak **karar kesme noktası 0.50 → 0.40** yapıldı. Bu karar sonuç görüldükten SONRA verilmiştir.
 
 Tanım netleştirmesi (eğitimden önce, uygulamayı yazarken fark edildi): `tiklama_araligi_ms` ilk taslakta "önceki tıklamadan bu yana" idi. Sentetik üretici "telaşlı/hızlı tıklama = zorlanma" varsayar; uygulama da aynı anlamı ölçsün diye tanım "sahnedeki ardışık tıklamalar arası ortalama süre" yapıldı. Eşikler etkilenmedi.
+
+## 7. Gerçek veri ile dış doğrulama (eğitimden sonra eklendi)
+
+5 gerçek oturum (35 satır) toplandıktan sonra model gerçek veride ayrıca denendi: yalnızca sentetikle eğitilmiş ön sürüm recall 0.375 / F1 0.500 / AUC 0.741; güncel tarif bir-oturum-dışarıda doğrulamada recall 0.250 / F1 0.364 / AUC 0.727. **Eşikler (§2) değiştirilmedi.** Eval kapısı büyük ölçüde sentetik bir test setinde geçildi; gerçek veride eşikler sağlanmıyor ve bu `model/README.md`'de açıkça yazılıdır. Kabul örnekleri 1 ve 2 (§4) güncel modelde sağlanıyor (p = 0.886 ve p = 0.246).

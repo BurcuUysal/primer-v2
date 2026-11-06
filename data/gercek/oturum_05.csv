@@ -1,0 +1,8 @@
+oturum_id,seviye,karar_suresi_sn,karar_degistirme_sayisi,tiklama_araligi_ms,onceki_yanlis_sayisi,ipucu_sayisi,sahne_no,zorlandi,kaynak
+bb3a867c915b,1,9.05,0,2285,0,0,1,0,gercek
+bb3a867c915b,1,6.47,0,1000,0,0,2,0,gercek
+bb3a867c915b,1,6.1,0,599,0,0,3,0,gercek
+bb3a867c915b,1,5.63,0,567,0,0,4,0,gercek
+bb3a867c915b,1,7.6,0,817,0,0,5,0,gercek
+bb3a867c915b,1,5.03,0,550,0,0,6,0,gercek
+bb3a867c915b,1,9.01,0,733,0,0,7,0,gercek

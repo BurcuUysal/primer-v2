@@ -8,8 +8,9 @@
 | Girdi | 3 giriş sorusu | 7 davranış özelliği (süre, karar değiştirme, tıklama aralığı, yanlış/ipucu sayısı, seviye, sahne) |
 | Etki | Dal seçimi | Süre baskısı, ipucu ve anlatım derinliği |
 
-**Sabitlenen commit:** `7e2b1e034c9f7798786adaba36698bb8dffbe5c0`
-**Model URL'si:** `https://huggingface.co/burcuuysal/primer-v2-zorlanma/resolve/7e2b1e034c9f7798786adaba36698bb8dffbe5c0/model.onnx`
+**Sabitlenen commit (güncel sürüm):** `9a09a5de74bc36cc59934e34eaffaa6d69253ab9`
+**Model URL'si:** `https://huggingface.co/burcuuysal/primer-v2-zorlanma/resolve/9a09a5de74bc36cc59934e34eaffaa6d69253ab9/model.onnx`
+**Önceki sürüm (rollback hedefi):** `7e2b1e034c9f7798786adaba36698bb8dffbe5c0`: yalnızca sentetik veriyle eğitilmiş ön sürüm.
 Uygulamada bu URL `index.html` içindeki `HF_MODEL_URL` sabitine yazılmıştır (indirme başarısız olursa aynı dosyanın yerel kopyası yedek olarak denenir; `body[data-model-kaynak]` hangisinin kullanıldığını gösterir). Tüketici `main` dalına **asla** bağlanmaz: `main` kayabilir, commit kayamaz.
 
 ## 2. Geri alma (Rollback)
@@ -22,7 +23,7 @@ Sorun çıkarsa kod değiştirmeden önceki bilinen iyi sürüme dönülür:
 
 Acil durumda sayfa `?model=<eski_url>&config=<eski_config_url>` parametreleriyle de geçici olarak eski sürümle açılabilir. Bu, geri almanın tek adım olduğunu gösterir, çünkü sürüm bir **commit sabitidir**.
 
-*Not: ilk yayında önceki model sürümü yoktur (v1 kural tabanlıydı). İki geri dönüş yolu vardır: (1) model yüklenemezse uygulama otomatik olarak sabit `normal` davranışa düşer (`index.html` içinde kodlu), yani oyun çalışmaya devam eder; (2) tamamen v1'e dönmek için geçen haftaki sürümün git etiketine/commit'ine geri dönülür.*
+*Not: Hugging Face'te önceki bir sürüm vardır (`7e2b1e0`, yalnızca sentetikle eğitilmiş ön sürüm); geri dönüş hedefi budur. Ayrıca model yüklenemezse uygulama otomatik olarak sabit `normal` davranışa düşer (`index.html` içinde kodlu), yani oyun çalışmaya devam eder; tamamen v1'e dönmek için geçen haftaki sürümün git etiketine/commit'ine geri dönülür.*
 
 ## 3. Yeni sürümü güvenle devreye alma (planın nasıl işleyeceği)
 
